@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MQDH</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Liberation+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -31,17 +31,17 @@ html,body{
 
 .star{
   position:absolute;
-  width:6px;
-  height:6px;
+  width:7px;
+  height:7px;
   border-radius:50%;
   opacity:.85;
   cursor:pointer;
-  animation: twinkle 4s infinite ease-in-out;
+  animation:twinkle 4s infinite ease-in-out;
 }
 
 @keyframes twinkle{
   0%,100%{opacity:.9}
-  50%{opacity:.4}
+  50%{opacity:.3}
 }
 
 .texto{
@@ -88,80 +88,37 @@ input.hidden{
 </head>
 
 <body>
+
 <div id="sky"></div>
 
-<div class="texto" id="logo">
-  <span class="m" data-letter="m">M</span>
-  <span class="q" data-letter="q">Q</span>
-  <span class="d" data-letter="d">D</span>
-  <span class="h" data-letter="h">H</span>
-</div>
+<div class="texto" id="logo"></div>
 
 <input id="hiddenInput" class="hidden" autocomplete="off">
 
 <script>
-const logo = document.getElementById('logo');
-const sky = document.getElementById('sky');
-const input = document.getElementById('hiddenInput');
+const logo = document.getElementById("logo");
+const sky = document.getElementById("sky");
+const input = document.getElementById("hiddenInput");
 
 const combinaciones = {
-  punk:{text:"CERCA PERO NO HABRA AQUI.",colors:["#ff6b6b","#c44536","#f19066"]},
-  trap:{text:"HABRA UNA.",colors:["#54a0ff","#2e86de","#341f97"]},
-  acustica:{text:"NO SE DE SENTIMIENTOS PERO SI.",colors:["#feca57","#ff9f43","#fff3cd"]},
-  fusion:{text:"SERA LO MEJOR DE LO MEJOR.",colors:["#5f27cd","#1dd1a1","#48dbfb"]},
-  regueton:{text:"TU SABES QUE SI.",colors:["#ee5253","#f368e0","#ff9ff3"]},
-  "que es":{text:"UN ALBUM PUEH.",colors:["#c8d6e5","#8395a7","#576574"]},
-  jazz:{text:"ME CONOCES BIEN, GRACIAS :)",colors:["#f5f6fa","#c23616","#2f3640"]},
-  electronica:{text:"MAYORMENTE LO TIENE.",colors:["#00d2d3","#01a3a4","#222f3e"]},
-  guitarra:{text:"NO ME GUSTA PARA NADA, ASI QUE NO HABRA.",colors:["#b71540","#6F1E51","#130f40"]},
-  percusion:{text:"COMO SIEMPRE UNA.",colors:["#f0932b","#eb4d4b","#4834d4"]},
-  pop:{text:"QUIERO SERLO PERO ME AGRADA SER COMO SOY, ENTIENDES VERDAD?",colors:["#ff9ff3","#feca57","#48dbfb"]}
+  punk:{t:"CERCA PERO NO HABRA AQUI.",c:["#ff6b6b","#c44536","#f19066"]},
+  trap:{t:"HABRA UNA.",c:["#54a0ff","#2e86de","#341f97"]},
+  acustica:{t:"NO SE DE SENTIMIENTOS PERO SI.",c:["#feca57","#ff9f43"]},
+  fusion:{t:"SERA LO MEJOR DE LO MEJOR.",c:["#5f27cd","#1dd1a1"]},
+  regueton:{t:"TU SABES QUE SI.",c:["#ee5253","#f368e0"]},
+  "que es":{t:"UN ALBUM PUEH.",c:["#c8d6e5","#576574"]},
+  jazz:{t:"ME CONOCES BIEN, GRACIAS :)",c:["#f5f6fa","#2f3640"]},
+  electronica:{t:"MAYORMENTE LO TIENE.",c:["#00d2d3","#01a3a4"]},
+  guitarra:{t:"NO ME GUSTA PARA NADA, ASI QUE NO HABRA.",c:["#b71540","#130f40"]},
+  percusion:{t:"COMO SIEMPRE UNA.",c:["#f0932b","#eb4d4b"]},
+  pop:{t:"QUIERO SERLO PERO ME AGRADA SER COMO SOY, ENTIENDES VERDAD?",c:["#ff9ff3","#48dbfb"]}
 };
 
-let bufferClick=[];
+let bufferClick="";
 let bufferKey="";
 
-function saveStar(key){
-  const stars=JSON.parse(localStorage.getItem("mqdh-stars")||"[]");
-  if(stars.find(s=>s.key===key)) return;
-  stars.push({
-    key,
-    x:Math.random()*100,
-    y:Math.random()*100
-  });
-  localStorage.setItem("mqdh-stars",JSON.stringify(stars));
-  drawStars();
-}
-
-function drawStars(){
-  sky.innerHTML="";
-  const stars=JSON.parse(localStorage.getItem("mqdh-stars")||"[]");
-  stars.forEach(s=>{
-    const star=document.createElement("div");
-    star.className="star";
-    star.style.left=s.x+"%";
-    star.style.top=s.y+"%";
-    star.style.background=combinaciones[s.key].colors[0];
-    star.onclick=()=>cambiarTexto(combinaciones[s.key].text,s.key);
-    sky.appendChild(star);
-  });
-}
-
-function cambiarTexto(text,key){
-  logo.classList.add("cambiado");
-  logo.innerHTML="";
-  text.split("").forEach(c=>{
-    const s=document.createElement("span");
-    s.textContent=c===" "?" ":c;
-    s.style.color=randomColor(key);
-    if(c===".") s.classList.add("blink");
-    logo.appendChild(s);
-  });
-  if(key) saveStar(key);
-}
-
-function volverInicio(){
-  logo.classList.remove("cambiado");
+function renderMQDH(){
+  logo.className="texto";
   logo.innerHTML=`
     <span class="m" data-letter="m">M</span>
     <span class="q" data-letter="q">Q</span>
@@ -171,34 +128,72 @@ function volverInicio(){
 }
 
 function randomColor(key){
-  const c=combinaciones[key]?.colors||["#fff"];
+  const c=combinaciones[key]?.c||["#fff"];
   return c[Math.floor(Math.random()*c.length)];
 }
 
+function cambiarTexto(text,key){
+  logo.classList.add("cambiado");
+  logo.innerHTML="";
+  text.split("").forEach(ch=>{
+    const s=document.createElement("span");
+    s.textContent=ch===" "?" ":ch;
+    s.style.color=randomColor(key);
+    if(ch===".") s.classList.add("blink");
+    s.onclick=()=>{ if(ch===".") renderMQDH(); };
+    logo.appendChild(s);
+  });
+  if(key) guardarEstrella(key);
+}
+
+function guardarEstrella(key){
+  const data=JSON.parse(localStorage.getItem("mqdh-stars")||"[]");
+  if(data.find(e=>e.key===key)) return;
+  data.push({key,x:Math.random()*100,y:Math.random()*100});
+  localStorage.setItem("mqdh-stars",JSON.stringify(data));
+  dibujarEstrellas();
+}
+
+function dibujarEstrellas(){
+  sky.innerHTML="";
+  const data=JSON.parse(localStorage.getItem("mqdh-stars")||"[]");
+  data.forEach(e=>{
+    const star=document.createElement("div");
+    star.className="star";
+    star.style.left=e.x+"%";
+    star.style.top=e.y+"%";
+    star.style.background=combinaciones[e.key].c[0];
+    star.onclick=()=>cambiarTexto(combinaciones[e.key].t,e.key);
+    sky.appendChild(star);
+  });
+}
+
 logo.addEventListener("click",e=>{
-  const v=e.target.dataset?.letter;
-  if(!v) return;
-  bufferClick.push(v);
-  if(bufferClick.join("").endsWith("chat")){
+  const l=e.target.dataset?.letter;
+  if(!l) return;
+  bufferClick+=l;
+  if(bufferClick.endsWith("chat")){
     input.focus();
-    bufferClick=[];
+    bufferClick="";
   }
-  if(v===".") volverInicio();
 });
 
 input.addEventListener("input",()=>{
   bufferKey+=input.value.toLowerCase();
   input.value="";
+  if(bufferKey.length>30) bufferKey=bufferKey.slice(-30);
   Object.keys(combinaciones).forEach(k=>{
     if(bufferKey.endsWith(k)){
-      cambiarTexto(combinaciones[k].text,k);
+      cambiarTexto(combinaciones[k].t,k);
       bufferKey="";
       input.blur();
     }
   });
 });
 
-drawStars();
+renderMQDH();
+dibujarEstrellas();
 </script>
+
 </body>
 </html>
