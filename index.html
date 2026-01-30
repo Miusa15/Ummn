@@ -1,196 +1,240 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MQDH</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MQDH</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Liberation+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Liberation+Sans:wght@400;700&display=swap" rel="stylesheet">
 
-<style>
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  background:#0e0e0e;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:"Liberation Sans",system-ui,sans-serif;
-  color:#fff;
-  text-transform:uppercase;
-  overflow:hidden;
-}
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0e0e0e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Liberation Sans", system-ui, sans-serif;
+      color: #ffffff;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
 
-#sky{
-  position:absolute;
-  inset:0;
-  z-index:0;
-}
+    .texto {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      font-weight: 700;
+      letter-spacing: -0.08em;
+      user-select: none;
+      max-width: 100vw;
+      flex-wrap: wrap;
+      text-align: center;
+    }
 
-.star{
-  position:absolute;
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  opacity:.85;
-  cursor:pointer;
-  animation:twinkle 4s infinite ease-in-out;
-}
+    .texto.cambiado {
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      letter-spacing: 0.08em;
+    }
 
-@keyframes twinkle{
-  0%,100%{opacity:.9}
-  50%{opacity:.3}
-}
+    .texto span {
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.15s ease, transform 0.15s ease, opacity 0.3s ease;
+      padding: 0 0.02em;
+    }
 
-.texto{
-  position:relative;
-  z-index:2;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  font-weight:700;
-  letter-spacing:-0.08em;
-  user-select:none;
-  flex-wrap:nowrap;
-}
+    .blink {
+      animation: blink 1.2s infinite ease-in-out;
+    }
 
-.texto.cambiado{
-  font-size:clamp(1.2rem,4vw,2.3rem);
-  letter-spacing:.08em;
-  flex-wrap:wrap;
-  text-align:center;
-}
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
 
-.texto span{
-  cursor:pointer;
-  transition:color .15s,transform .15s,opacity .3s;
-  line-height:1;
-}
+    .m { font-size: clamp(3rem, 8vw, 4rem); }
+    .q { font-size: clamp(5rem, 14vw, 7rem); }
+    .d { font-size: clamp(5rem, 14vw, 7rem); }
+    .h { font-size: clamp(3rem, 8vw, 4rem); }
 
-.blink{animation:blink 1.2s infinite}
-
-@keyframes blink{
-  0%,100%{opacity:1}
-  50%{opacity:.35}
-}
-
-.m{font-size:clamp(3rem,8vw,4rem)}
-.q{font-size:clamp(5rem,14vw,7rem)}
-.d{font-size:clamp(5rem,14vw,7rem)}
-.h{font-size:clamp(3rem,8vw,4rem)}
-
-input.hidden{
-  position:fixed;
-  opacity:0;
-  pointer-events:none;
-}
-</style>
+    input.hidden {
+      position: fixed;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
 
-<div id="sky"></div>
-<div class="texto" id="logo"></div>
-<input id="hiddenInput" class="hidden" autocomplete="off">
-
-<script>
-const logo=document.getElementById('logo');
-const sky=document.getElementById('sky');
-const input=document.getElementById('hiddenInput');
-
-const combinaciones={
-  punk:{t:"CERCA PERO NO HABRA AQUI.",c:["#ff6b6b","#c44536","#f19066"]},
-  trap:{t:"HABRA UNA.",c:["#54a0ff","#2e86de","#341f97"]},
-  acustica:{t:"NO SE DE SENTIMIENTOS PERO SI.",c:["#feca57","#ff9f43"]},
-  fusion:{t:"SERA LO MEJOR DE LO MEJOR.",c:["#5f27cd","#1dd1a1"]},
-  regueton:{t:"TU SABES QUE SI.",c:["#ee5253","#f368e0"]},
-  "que es":{t:"UN ALBUM PUEH.",c:["#c8d6e5","#576574"]},
-  jazz:{t:"ME CONOCES BIEN, GRACIAS :)",c:["#f5f6fa","#2f3640"]},
-  electronica:{t:"MAYORMENTE LO TIENE.",c:["#00d2d3","#01a3a4"]},
-  guitarra:{t:"NO ME GUSTA PARA NADA, ASI QUE NO HABRA.",c:["#b71540","#130f40"]},
-  percusion:{t:"COMO SIEMPRE UNA.",c:["#f0932b","#eb4d4b"]},
-  pop:{t:"QUIERO SERLO PERO ME AGRADA SER COMO SOY, ENTIENDES VERDAD?",c:["#ff9ff3","#48dbfb"]}
-};
-
-let bufferClick="";
-let bufferKey="";
-
-function renderMQDH(){
-  logo.className='texto';
-  logo.innerHTML=`
+  <div class="texto" id="logo">
     <span class="m" data-letter="m">M</span>
     <span class="q" data-letter="q">Q</span>
     <span class="d" data-letter="d">D</span>
-    <span class="h" data-letter="h">H</span>`;
-}
+    <span class="h" data-letter="h">H</span>
+  </div>
 
-function randomColor(key){
-  const p=combinaciones[key]?.c||['#fff'];
-  return p[Math.floor(Math.random()*p.length)];
-}
+  <input class="hidden" id="hiddenInput" autocomplete="off" />
 
-function cambiarTexto(text,key){
-  logo.classList.add('cambiado');
-  logo.innerHTML='';
-  text.split('').forEach(ch=>{
-    const s=document.createElement('span');
-    s.textContent=ch===' '?' ':ch;
-    s.style.color=randomColor(key);
-    if(ch==='.') s.classList.add('blink');
-    s.onclick=()=>{ if(ch==='.') renderMQDH(); };
-    logo.appendChild(s);
-  });
-  if(key) guardarEstrella(key);
-}
+  <script>
+    const colores = ['#ff6b6b', '#feca57', '#54a0ff', '#5f27cd', '#1dd1a1'];
 
-function guardarEstrella(key){
-  const data=JSON.parse(localStorage.getItem('mqdh-stars')||'[]');
-  if(data.some(e=>e.key===key)) return;
-  data.push({key,x:Math.random()*100,y:Math.random()*100});
-  localStorage.setItem('mqdh-stars',JSON.stringify(data));
-  dibujarEstrellas();
-}
+    const secuenciaMQDH = ['q','m','m','d','h'];
+    const secuenciaFECHA = ['f','e','c','h','a'];
 
-function dibujarEstrellas(){
-  sky.innerHTML='';
-  const data=JSON.parse(localStorage.getItem('mqdh-stars')||'[]');
-  data.forEach(e=>{
-    const star=document.createElement('div');
-    star.className='star';
-    star.style.left=e.x+'%';
-    star.style.top=e.y+'%';
-    star.style.background=combinaciones[e.key].c[0];
-    star.onclick=()=>cambiarTexto(combinaciones[e.key].t,e.key);
-    sky.appendChild(star);
-  });
-}
+    const combinacionesTeclado = {
+      'punk': 'CERCA PERO NO HABRA AQUI',
+      'trap': 'HABRA UNA',
+      'acustica': 'NO SE DE SENTIMIENTOS PERO SI',
+      'fusion': 'SERA LO MEJOR DE LO MEJOR',
+      'regueton': 'TU SABES QUE SI',
+      'que es': 'UN ALBUM PUEH',
+      'jazz': 'ME CONOCES BIEN, GRACIAS :)',
+      'electronica': 'MAYORMENTE LO TIENE',
+      'guitarra': 'NO ME GUSTA PARA NADA, ASI QUE NO HABRA',
+      'percusion': 'COMO SIEMPRE UNA'
+    };
 
-logo.addEventListener('click',e=>{
-  const l=e.target.dataset?.letter;
-  if(!l) return;
-  bufferClick+=l;
-  if(bufferClick.endsWith('chat')){
-    input.focus();
-    bufferClick='';
-  }
-});
+    let bufferClick = [];
+    let bufferMQDH = [];
+    let bufferFECHA = [];
+    let bufferKey = '';
 
-input.addEventListener('input',()=>{
-  bufferKey+=input.value.toLowerCase();
-  input.value='';
-  if(bufferKey.length>30) bufferKey=bufferKey.slice(-30);
-  Object.keys(combinaciones).forEach(k=>{
-    if(bufferKey.endsWith(k)){
-      cambiarTexto(combinaciones[k].t,k);
-      bufferKey='';
-      input.blur();
+    const logo = document.getElementById('logo');
+    const input = document.getElementById('hiddenInput');
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playClick(freq) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
     }
-  });
-});
 
-renderMQDH();
-dibujarEstrellas();
-</script>
+    function playBell(step = 0) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = 600 + step * 180;
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.4);
+    }
+
+    function cambiarTexto(texto) {
+      bufferMQDH = [];
+      bufferFECHA = [];
+      bufferKey = '';
+      bufferClick = [];
+
+      logo.classList.add('cambiado');
+      logo.innerHTML = '';
+
+      const textoFinal = texto.endsWith('.') ? texto : texto + '.';
+
+      textoFinal.split('').forEach(c => {
+        const s = document.createElement('span');
+        s.textContent = c === ' ' ? '\u00A0' : c;
+        s.dataset.letter = c.toLowerCase();
+        if (c === '.') s.classList.add('blink');
+        logo.appendChild(s);
+      });
+
+      makeInteractive();
+    }
+
+    function volverInicio() {
+      bufferMQDH = [];
+      bufferFECHA = [];
+      bufferKey = '';
+      bufferClick = [];
+
+      logo.classList.remove('cambiado');
+      logo.innerHTML = `
+        <span class="m" data-letter="m">M</span>
+        <span class="q" data-letter="q">Q</span>
+        <span class="d" data-letter="d">D</span>
+        <span class="h" data-letter="h">H</span>
+      `;
+      makeInteractive();
+    }
+
+    function makeInteractive() {
+      logo.querySelectorAll('span').forEach((letra, i) => {
+        letra.onclick = () => {
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+
+          letra.style.color = colores[Math.floor(Math.random() * colores.length)];
+          letra.style.transform = 'translateY(-0.12em)';
+          playClick(300 + i * 90);
+          setTimeout(() => letra.style.transform = 'translateY(0)', 120);
+
+          const v = letra.dataset.letter;
+          bufferClick.push(v);
+          bufferClick = bufferClick.slice(-4);
+
+          if (bufferClick.join('') === 'chat') {
+            input.focus();
+            bufferClick = [];
+          }
+
+          if (v === '.') {
+            volverInicio();
+            return;
+          }
+
+          const esperadoMQDH = secuenciaMQDH[bufferMQDH.length];
+          if (v === esperadoMQDH) {
+            playBell(bufferMQDH.length);
+            bufferMQDH.push(v);
+          } else bufferMQDH = [];
+
+          if (bufferMQDH.length === secuenciaMQDH.length) {
+            cambiarTexto('MUSICA QUE DISFRUTO HACER');
+            return;
+          }
+
+          const esperadoFECHA = secuenciaFECHA[bufferFECHA.length];
+          if (v === esperadoFECHA) {
+            playBell(bufferFECHA.length);
+            bufferFECHA.push(v);
+          } else bufferFECHA = [];
+
+          if (bufferFECHA.length === secuenciaFECHA.length) {
+            cambiarTexto('19/03 PARTE 1');
+          }
+        };
+      });
+    }
+
+    input.addEventListener('input', () => {
+      const value = input.value.toLowerCase();
+      input.value = '';
+
+      bufferKey += value;
+      bufferKey = bufferKey.replace(/\s+/g, ' ').trimStart();
+
+      Object.entries(combinacionesTeclado).forEach(([key, texto]) => {
+        if (bufferKey.endsWith(key)) {
+          cambiarTexto(texto);
+          bufferKey = '';
+          input.blur();
+        }
+      });
+    });
+
+    makeInteractive();
+  </script>
+
 </body>
 </html>
