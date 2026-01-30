@@ -83,11 +83,16 @@
     const secuenciaFECHA = ['f','e','c','h','a'];
 
     const combinacionesTeclado = {
-      punk: 'CERCA PERO NO HABRA AQUI.',
-      trap: 'HABRA UNA.',
-      acustica: 'NO SE DE SENTIMIENTOS PERO SI.',
-      fusion: 'SERA LO MEJOR DE LO MEJOR.',
-      regueton: 'TU SABES QUE SI.'
+      'punk': 'CERCA PERO NO HABRA AQUI.',
+      'trap': 'HABRA UNA.',
+      'acustica': 'NO SE DE SENTIMIENTOS PERO SI.',
+      'fusion': 'SERA LO MEJOR DE LO MEJOR.',
+      'regueton': 'TU SABES QUE SI.',
+      'que es': 'UN ALBUM PUEH.',
+      'jazz': 'ME CONOCES BIEN, GRACIAS :)',
+      'electronica': 'MAYORMENTE LO TIENE.',
+      'guitarra': 'NO ME GUSTA PARA NADA, ASI QUE NO HABRA.',
+      'percusion': 'COMO SIEMPRE UNA.'
     };
 
     let bufferClick = [];
@@ -129,10 +134,14 @@
       bufferKey = [];
       logo.classList.add('cambiado');
       logo.innerHTML = '';
-      texto.split('').forEach(c => {
+
+      const textoFinal = texto.endsWith('.') ? texto : texto + '.';
+
+      textoFinal.split('').forEach(c => {
         const s = document.createElement('span');
         s.textContent = c === ' ' ? '\u00A0' : c;
         s.dataset.letter = c.toLowerCase();
+        if (c === '.') s.classList.add('blink');
         logo.appendChild(s);
       });
       makeInteractive();
@@ -198,7 +207,20 @@
     }
 
     input.addEventListener('input', () => {
-      bufferKey.push(input.value.slice(-1).toLowerCase());
+      const char = input.value.slice(-1).toLowerCase();
+      input.value = '';
+
+      bufferKey.push(char);
+      const texto = bufferKey.join('').trim();
+
+      Object.keys(combinacionesTeclado).forEach(key => {
+        if (texto.endsWith(key)) {
+          cambiarTexto(combinacionesTeclado[key]);
+          input.blur();
+          bufferKey = [];
+        }
+      });
+    });
       input.value = '';
 
       const texto = bufferKey.join('');
